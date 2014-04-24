@@ -56,6 +56,7 @@ public class MmasgisServlet extends HttpServlet implements Servlet {
 		// CLASSI E VALORI
 		taskActions.put("getClass", new ClassTask());
 		taskActions.put("getValue", new ValueTask());
+		taskActions.put("allGetClass", new AllClassTask());
 		// PERSONALIZZAZIONI
 		taskActions.put("getClassAz", new ClassAzTask());
 		taskActions.put("getValueAz", new ValueAzTask());

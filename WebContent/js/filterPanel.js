@@ -1944,7 +1944,7 @@ function showFilters() {
 			} ]
 		} ],
 		items : [ {
-			title : 'Dati anagrafici',
+			title : 'Dati generali',
 			items :[chooseClient],
 			layout : 'hbox'
 		},{

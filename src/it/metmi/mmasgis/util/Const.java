@@ -19,8 +19,9 @@ public class Const {
 	/**
 	 * Password del database
 	 */
+	
+	//public static String password = "labcad";
 	public static String password = "unimi??";
-	// public static String password = "ac78.ac78";
 	// AZIENDA
 	//public static String password = "$$metmi";
 	
@@ -536,7 +537,7 @@ public class Const {
 	 * ROUND(COUNT(tc.nome1)/ %s *100.0, 2) PercentPV , 
 	 * SUM(p.cliente) AS NumClienti, 
 	 * ROUND(SUM(p.cliente)/ %s *100.0, 2) PercentClienti, 
-	 * ROUND(SUM(rp.valore),0) potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT 
+	 * ROUND(SUM(rp.valore),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT 
 	 * FROM %s.geografia s 
 	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) 
 	 * JOIN mmasgisDB.tc_%s tc ON (i.tc_%s_id=tc.tc_%s_id) 
@@ -610,7 +611,7 @@ public class Const {
 	public static String aggregazionePvCap = "SELECT tc.tc_comune_id id,tc.nome1 AS Territorio, "
 			+ "COUNT(tc.nome1) AS NumPV, " + "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
 			+ "SUM(p.cliente) AS NumClienti," + "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
-			+ "ROUND(SUM(rp.valore)/NumPV,0) potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
+			+ "ROUND(SUM(rp.valore)/COUNT(tc.nome1),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
 			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
 			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "
 			+ "JOIN %s.pv p ON (s.pv_id = p.pv_id) "
@@ -643,7 +644,7 @@ public class Const {
 			+ "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
 			+ "SUM(p.cliente) AS NumClienti," 
 			+ "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
-			+ "ROUND(SUM(rp.importo)/NumPV,0) Fatturato,"
+			+ "ROUND(SUM(rp.importo)/COUNT(tc.nome1),0) Fatturato,"
 			+ "ROUND(SUM(rp.importo)/ %s *100.0,2) Percentuale_Fatt "
 			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
 			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "

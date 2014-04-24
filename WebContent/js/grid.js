@@ -10,6 +10,7 @@ var text = "";
 var text2 = "";
 var layers = [['REGIONE'], ['PROVINCIA'], ['COMUNE'], ['AREE CAP E COMUNI']];
 var excelCustomer='';
+
 Ext.onReady(function() {
 	Ext.QuickTips.init();
 	Ext.define('PvInfo', {
@@ -987,8 +988,27 @@ Ext.onReady(function() {
 				 //console.debug(item);
 				 //console.debug(index);
 				 var selection = grid.getView().getSelectionModel().getSelection()[0];
+				 //console.debug(selection.data.pv_id);
+				 
+				 Ext.Ajax.request({
+			     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+				  			params:{
+				  				task : 'allGetClass',
+							//category : 'ser',
+							id : selection.data.pv_id,
+							censimento : dbname
+				  			},
+						  	success: function(response){
+						  		var obj = Ext.decode(response.responseText);
+						  		//console.debug(obj);
+						  		//console.debug(obj.results.length);
+						  		//ser=obj.results.length;
+						  		showTabPanel(selection.index,obj.results);
+						  		
+						  	}
+				  	});
 				 //console.debug(selection.index);
-				 showTabPanel(selection.index);
+				 //showTabPanel(selection.index);
 			 }
 		 }
 	});
@@ -1295,22 +1315,21 @@ Ext.onReady(function() {
 	});
 
 	store.loadPage(1);
-
-	function showTabPanel(index) {
-
+	
+	function showTabPanel(index,results) {
 		//var selection = grid.getView().getSelectionModel().getSelection()[0];
 		
 		var store = grid.getStore();
 		var selModel = grid.getSelectionModel();
 		var selection = selModel.getLastSelected();
 		
-		
 		if (selection.data.cliente == 'Si') {
 			check_cliente = true;
 		}
-		else
+		else{
 			check_cliente = false;
-
+		}
+		
 		var headerTab = Ext.create('Ext.form.Panel', {
 			frame : true,
 			width : '100%',
@@ -1509,7 +1528,7 @@ Ext.onReady(function() {
 			}
 
 		});
-
+		//servicesGridFactory(selection.data.pv_id);
 		tabs.add({
 			title : 'Potenziali MMAS',
 			closable : false,
@@ -1525,12 +1544,15 @@ Ext.onReady(function() {
 			closable : false,
 			items : brandsGridFactory(selection.data.pv_id)
 		});
-		tabs.add({
-			title : 'Servizi MMAS',
-			closable : false,
-			items : servicesGridFactory(selection.data.pv_id)
-		});
-		
+		//console.debug(serLength);
+		if(results[0]!='0'){
+			//console.debug(serLength);
+			tabs.add({
+				title : 'Servizi MMAS',
+				closable : false,
+				items : servicesGridFactory(selection.data.pv_id)
+			});
+		}
 		tabs.add({
 			title : 'Note',
 			closable : false,
@@ -1539,33 +1561,37 @@ Ext.onReady(function() {
 
 
 		if (custom == '1') {
-			tabs.add({
-				title : 'Fatturati',
-				closable : false,
-				items : fatturatiGridFactory(selection.data.pv_id)
-			});
-
-			tabs.add({
-				title : 'Potenziali Az',
-				itemId : 'pot_az',
-				closable : false,
-				items : potentialsAziendaFactory(selection.data.pv_id)
-			});
-
-			tabs.add({
-				title : 'Parametri Az',
-				itemId : 'par_az',
-				closable : false,
-				items : parametersAziendaFactory(selection.data.pv_id)
-			});
-
-			tabs.add({
-				title : 'Marche Az',
-				itemId : 'mar_az',
-				closable : false,
-				items : brandsAziendaFactory(selection.data.pv_id)
-			});
-
+			if(results[1]!='0'){
+				tabs.add({
+					title : 'Fatturati',
+					closable : false,
+					items : fatturatiGridFactory(selection.data.pv_id)
+				});
+			}
+			if(results[2]!='0'){
+				tabs.add({
+					title : 'Potenziali Az',
+					itemId : 'pot_az',
+					closable : false,
+					items : potentialsAziendaFactory(selection.data.pv_id)
+				});
+			}
+			if(results[3]!='0'){
+				tabs.add({
+					title : 'Parametri Az',
+					itemId : 'par_az',
+					closable : false,
+					items : parametersAziendaFactory(selection.data.pv_id)
+				});
+			}
+			if(results[4]!='0'){
+				tabs.add({
+					title : 'Marche Az',
+					itemId : 'mar_az',
+					closable : false,
+					items : brandsAziendaFactory(selection.data.pv_id)
+				});
+			}
 		}
 
 		var w = new Ext.Window({
@@ -1595,9 +1621,25 @@ Ext.onReady(function() {
 					    var recordIndex = 0;
 					    var nextRecord = store.getAt(recordIndex);
 					    selModel.select(nextRecord);
-					      		//console.debug(nextRecord);
+					    var selection=selModel.getLastSelected();
 					      		
-					    showTabPanel(recordIndex);
+					    Ext.Ajax.request({
+				     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+					  			params:{
+					  				task : 'allGetClass',
+					  				//category : 'ser',
+					  				id : selection.data.pv_id,
+					  				censimento : dbname
+					  			},
+							  	success: function(response){
+							  		var obj = Ext.decode(response.responseText);
+							  		//console.debug(obj);
+							  		//console.debug(obj.results.length);
+							  		//ser=obj.results.length;
+							  		showTabPanel(recordIndex,obj.results);
+							  		
+							  	}
+					  	});
 					}
 	   	      }, 
 			  {
@@ -1613,9 +1655,25 @@ Ext.onReady(function() {
 			      		var recordIndex = store.indexOf(selection);
 			      		var nextRecord = store.getAt(recordIndex - 1);
 			      		selModel.select(nextRecord);
-			      		//console.debug(nextRecord);
+			      		var sel=selModel.getLastSelected();
 			      		
-			        	showTabPanel(recordIndex - 1);
+			      		Ext.Ajax.request({
+				     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+					  			params:{
+					  				task : 'allGetClass',
+					  				//category : 'ser',
+					  				id : sel.data.pv_id,
+					  				censimento : dbname
+					  			},
+							  	success: function(response){
+							  		var obj = Ext.decode(response.responseText);
+							  		//console.debug(obj);
+							  		//console.debug(obj.results.length);
+							  		//ser=obj.results.length;
+							  		showTabPanel(recordIndex - 1,obj.results);
+							  		
+							  	}
+					  	});
 					}
 			    }, 
 			  	{
@@ -1631,9 +1689,25 @@ Ext.onReady(function() {
 			      		var recordIndex = store.indexOf(selection);
 			      		var nextRecord = store.getAt(recordIndex + 1);
 			      		selModel.select(nextRecord);
-			      		//console.debug(nextRecord);
+			      		var sel=selModel.getLastSelected();
 			      		
-			        	showTabPanel(recordIndex + 1);
+			      		Ext.Ajax.request({
+				     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+					  			params:{
+					  				task : 'allGetClass',
+					  				//category : 'ser',
+					  				id : sel.data.pv_id,
+								    censimento : dbname
+					  			},
+							  	success: function(response){
+							  		var obj = Ext.decode(response.responseText);
+							  		//console.debug(obj);
+							  		//console.debug(obj.results.length);
+							  		//ser=obj.results.length;
+							  		showTabPanel(recordIndex + 1,obj.results);
+							  		
+							  	}
+					  	});
 					}
 			    },
 			  	{
@@ -1648,10 +1722,27 @@ Ext.onReady(function() {
 			        	
 			      		var recordIndex = 499;
 			      		var nextRecord = store.getAt(recordIndex);
+			      		//console.debug("Ultimo: "+selModel.select(nextRecord));
 			      		selModel.select(nextRecord);
-			      		//console.debug(nextRecord);
-			      		
-			        	showTabPanel(recordIndex);
+			      		var selection=selModel.getLastSelected();
+			      		//console.debug(selection);
+			      		Ext.Ajax.request({
+				     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+					  			params:{
+					  				task : 'allGetClass',
+					  				//category : 'ser',
+					  				id : selection.data.pv_id,
+					  				censimento : dbname
+					  			},
+							  	success: function(response){
+							  		var obj = Ext.decode(response.responseText);
+							  		//console.debug(obj);
+							  		//console.debug(obj.results.length);
+							  		//ser=obj.results.length;
+							  		showTabPanel(recordIndex,obj.results);
+							  		
+							  	}
+					  	});
 					}
 			    },'-' ,
 			  	//{xtype: 'tbfill'}, 
@@ -2099,11 +2190,11 @@ function excelExportAll() {
 	form.action = 'http://' + constants.ip + constants.root + constants.servlet;
 	form.task.value = 'excel';
 
-	if (grid.getStore().proxy.extraParams.search != null) {
+	if (grid.getStore().proxy.extraParams.search != undefined) {
 		form.search.value = grid.getStore().proxy.extraParams.search;
 	}
 	else {
-		form.search.value = null;
+		form.search.value = '';
 	}
 
 	
@@ -2112,124 +2203,132 @@ function excelExportAll() {
 	//console.log(excelCustomer);
 	if (filter_flag == 1) {
 		if (selectedParValues.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedParValues) {
 				filterString = filterString + selectedParValues[i][1] + "," + selectedParValues[i][0] + "|";
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('parametri: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element1 = document.createElement("input");
-			element1.setAttribute("type", "hidden");
-			element1.setAttribute("value", filterString);
-			element1.setAttribute("name", "parametri");
-			element1.setAttribute("id", "parametri");
-			document.getElementById("estrazioni").appendChild(element1);
+			element1 = document.createElement('input');
+			element1.setAttribute('type', 'hidden');
+			element1.setAttribute('value', filterString);
+			element1.setAttribute('name', 'parametri');
+			element1.setAttribute('id', 'parametri');
+			document.getElementById('estrazioni').appendChild(element1);
 		}
 
 		if (selectedParValuesAz.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedParValuesAz) {
-				filterString = filterString + selectedParValuesAz[i][1] + "," + selectedParValuesAz[i][0]
-				+ "|";
+				filterString = filterString + selectedParValuesAz[i][1] + ',' + selectedParValuesAz[i][0]
+				+ '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('parametriAz: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element1custom = document.createElement("input");
-			element1custom.setAttribute("type", "hidden");
-			element1custom.setAttribute("value", filterString);
-			element1custom.setAttribute("name", "parametriAz");
-			element1custom.setAttribute("id", "parametriAz");
-			document.getElementById("estrazioni").appendChild(element1custom);
+			element1custom = document.createElement('input');
+			element1custom.setAttribute('type', 'hidden');
+			element1custom.setAttribute('value', filterString);
+			element1custom.setAttribute('name', 'parametriAz');
+			element1custom.setAttribute('id', 'parametriAz');
+			document.getElementById('estrazioni').appendChild(element1custom);
 		}
 
 		if (selectedMarValues.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedMarValues) {
-				filterString = filterString + selectedMarValues[i][1] + "," + selectedMarValues[i][0] + "|";
+				filterString = filterString + selectedMarValues[i][1] + ',' + selectedMarValues[i][0] + '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('marche: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element2 = document.createElement("input");
-			element2.setAttribute("type", "hidden");
-			element2.setAttribute("value", filterString);
-			element2.setAttribute("name", "marche");
-			element2.setAttribute("id", "marche");
-			document.getElementById("estrazioni").appendChild(element2);
+			element2 = document.createElement('input');
+			element2.setAttribute('type', 'hidden');
+			element2.setAttribute('value', filterString);
+			element2.setAttribute('name', 'marche');
+			element2.setAttribute('id', 'marche');
+			document.getElementById('estrazioni').appendChild(element2);
 		}
 
 		if (selectedMarValuesAz.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedMarValuesAz) {
-				filterString = filterString + selectedMarValuesAz[i][1] + "," + selectedMarValuesAz[i][0]
-				+ "|";
+				filterString = filterString + selectedMarValuesAz[i][1] + ',' + selectedMarValuesAz[i][0]
+				+ '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('marcheAz: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element2custom = document.createElement("input");
-			element2custom.setAttribute("type", "hidden");
-			element2custom.setAttribute("value", filterString);
-			element2custom.setAttribute("name", "marcheAz");
-			element2custom.setAttribute("id", "marcheAz");
-			document.getElementById("estrazioni").appendChild(element2custom);
+			element2custom = document.createElement('input');
+			element2custom.setAttribute('type', 'hidden');
+			element2custom.setAttribute('value', filterString);
+			element2custom.setAttribute('name', 'marcheAz');
+			element2custom.setAttribute('id', 'marcheAz');
+			document.getElementById('estrazioni').appendChild(element2custom);
 		}
 
 		if (selectedPotValues.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedPotValues) {
-				filterString = filterString + selectedPotValues[i][1] + "," + selectedPotValues[i][0] + "|";
+				filterString = filterString + selectedPotValues[i][1] + ',' + selectedPotValues[i][0] + '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('potenziali: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element3 = document.createElement("input");
-			element3.setAttribute("type", "hidden");
-			element3.setAttribute("value", filterString);
-			element3.setAttribute("name", "potenziali");
-			element3.setAttribute("id", "potenziali");
-			document.getElementById("estrazioni").appendChild(element3);
+			element3 = document.createElement('input');
+			element3.setAttribute('type', 'hidden');
+			element3.setAttribute('value', filterString);
+			element3.setAttribute('name', 'potenziali');
+			element3.setAttribute('id', 'potenziali');
+			document.getElementById('estrazioni').appendChild(element3);
 		}
 
 		if (selectedPotValuesAz.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedPotValuesAz) {
-				filterString = filterString + selectedPotValuesAz[i][1] + "," + selectedPotValuesAz[i][0]
-				+ "|";
+				filterString = filterString + selectedPotValuesAz[i][1] + ',' + selectedPotValuesAz[i][0]
+				+ '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('potenzialiAz: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element3custom = document.createElement("input");
-			element3custom.setAttribute("type", "hidden");
-			element3custom.setAttribute("value", filterString);
-			element3custom.setAttribute("name", "potenzialiAz");
-			element3custom.setAttribute("id", "potenzialiAz");
-			document.getElementById("estrazioni").appendChild(element3custom);
+			element3custom = document.createElement('input');
+			element3custom.setAttribute('type', 'hidden');
+			element3custom.setAttribute('value', filterString);
+			element3custom.setAttribute('name', 'potenzialiAz');
+			element3custom.setAttribute('id', 'potenzialiAz');
+			document.getElementById('estrazioni').appendChild(element3custom);
 		}
 		if (selectedSerValues.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedSerValues) {
-				filterString = filterString + selectedSerValues[i][1] + "," + selectedSerValues[i][0] + "|";
+				filterString = filterString + selectedSerValues[i][1] + ',' + selectedSerValues[i][0] + '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('servizi: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element4 = document.createElement("input");
-			element4.setAttribute("type", "hidden");
-			element4.setAttribute("value", filterString);
-			element4.setAttribute("name", "servizi");
-			element4.setAttribute("id", "servizi");
-			document.getElementById("estrazioni").appendChild(element4);
+			element4 = document.createElement('input');
+			element4.setAttribute('type', 'hidden');
+			element4.setAttribute('value', filterString);
+			element4.setAttribute('name', 'servizi');
+			element4.setAttribute('id', 'servizi');
+			document.getElementById('estrazioni').appendChild(element4);
 		}
 		if (selectedFatValues.length != 0) {
-			filterString = "";
+			filterString = '';
 			for (i in selectedFatValues) {
-				filterString = filterString + selectedFatValues[i][1] + "," + selectedFatValues[i][0] + "|";
+				filterString = filterString + selectedFatValues[i][1] + ',' + selectedFatValues[i][0] + '|';
 			}
 			filterString = filterString.substring(0, (filterString.length - 1));
+			//console.debug('fatturati: '+filterString);
 			// store.proxy.extraParams.parametri = filterString;
-			element5 = document.createElement("input");
-			element5.setAttribute("type", "hidden");
-			element5.setAttribute("value", filterString);
-			element5.setAttribute("name", "fatturati");
-			element5.setAttribute("id", "fatturati");
-			document.getElementById("estrazioni").appendChild(element5);
+			element5 = document.createElement('input');
+			element5.setAttribute('type', 'hidden');
+			element5.setAttribute('value', filterString);
+			element5.setAttribute('name', 'fatturati');
+			element5.setAttribute('id', 'fatturati');
+			document.getElementById('estrazioni').appendChild(element5);
 		}
 	}
 
@@ -2241,15 +2340,31 @@ function excelExportAll() {
 	form.header.value = getExcelHeader('griglia');
 	form.submit();
 
-	document.getElementById("parametri").parentNode.removeChild(document.getElementById("parametri"));
-	document.getElementById("marche").parentNode.removeChild(document.getElementById("marche"));
-	document.getElementById("potenziali").parentNode.removeChild(document.getElementById("potenziali"));
-	document.getElementById("servizi").parentNode.removeChild(document.getElementById("servizi"));
-	document.getElementById("fatturati").parentNode.removeChild(document.getElementById("fatturati"));
-
-	document.getElementById("parametriAz").parentNode.removeChild(document.getElementById("parametriAz"));
-	document.getElementById("marcheAz").parentNode.removeChild(document.getElementById("marcheAz"));
-	document.getElementById("potenzialiAz").parentNode.removeChild(document.getElementById("potenzialiAz"));
+	if(document.getElementById('parametri')!=null){
+		//console.debug(document.getElementById('parametri'));
+		document.getElementById('parametri').parentNode.removeChild(document.getElementById('parametri'));
+	}
+	if(document.getElementById('marche')!=null){
+		document.getElementById('marche').parentNode.removeChild(document.getElementById('marche'));
+	}
+	if(document.getElementById('potenziali')!=null){
+		document.getElementById('potenziali').parentNode.removeChild(document.getElementById('potenziali'));
+	}
+	if(document.getElementById('servizi')!=null){
+		document.getElementById('servizi').parentNode.removeChild(document.getElementById('servizi'));
+	}
+	if(document.getElementById('fatturati')!=null){
+		document.getElementById('fatturati').parentNode.removeChild(document.getElementById('fatturati'));
+	}
+	if(document.getElementById('parametriAz')!=null){
+		document.getElementById('parametriAz').parentNode.removeChild(document.getElementById('parametriAz'));
+	}
+	if(document.getElementById('marcheAz')!=null){
+		document.getElementById('marcheAz').parentNode.removeChild(document.getElementById('marcheAz'));
+	}
+	if(document.getElementById('potenzialiAz')!=null){
+		document.getElementById('potenzialiAz').parentNode.removeChild(document.getElementById('potenzialiAz'));
+	}
 }
 
 
@@ -2493,8 +2608,8 @@ RiservaVetrinaBtn = Ext.create('Ext.button.Button',{
 										else if (confirm2.toString() == "error") {
 											alert("Operazione non eseguita: esegui di nuovo l'inserimento dell'offerta da kubettONE");
 											// location.href =
-											location.href = "http://www.metmi.it/k1_aziende/src/offerta_inserita.php?settore="+dbname+"&id_offerta="+id_vetrina+"&vetrina=1";
-											//location.href = "http://gis.di.unimi.it/k1-azienda/src/offerta_inserita.php?settore="+dbname+"&id_offerta="+id_vetrina+"&vetrina=1";
+											//location.href = "http://www.metmi.it/k1_aziende/src/offerta_inserita.php?settore="+dbname+"&id_offerta="+id_vetrina+"&vetrina=1";
+											location.href = "http://gis.di.unimi.it/k1-azienda/src/offerta_inserita.php?settore="+dbname+"&id_offerta="+id_vetrina+"&vetrina=1";
 										}
 									}
 								});// fine richiesta 2 ajax

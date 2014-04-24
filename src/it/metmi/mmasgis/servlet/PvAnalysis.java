@@ -8,6 +8,10 @@ import java.io.PrintWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -115,15 +119,31 @@ public class PvAnalysis extends Task {
 					if(cap) {
 						query = String.format(Const.aggregazionePvCap,base_num,base_cl,base_pot, censimento, censimento, censimento, classeId, sortName, order);
 						result = db.eseguiQuery(query,true);
-					} else {
+					} 
+					else {
 						query = String.format(Const.aggregazionePv,livello,base_num,base_cl,base_pot,censimento, livello, livello, livello, censimento,censimento,classeId, livello, sortName, order);
 				
 					//	query = String.format(Const.aggregazionePv,livello,base_num,base_cl,base_pot,censimento, censimento,censimento,classeId, livello, sortName, order);
 					result = db.eseguiQuery(query,true);
 					//System.out.print(base_num +"-"+ base_cl +"-"+ base_pot);
 					//System.out.println(result.toString());
-				}	
-			}
+					}	
+					/*for(HashMap<String,String> t:result){
+						Iterator<Entry<String, String>> it = t.entrySet().iterator();
+						 
+						  // Verifica con il metodo hasNext() che nella hashmap
+						  // ci siano altri elementi su cui ciclare
+						  while (it.hasNext()) {
+						    // Utilizza il nuovo elemento (coppia chiave-valore)
+						    // dell'hashmap
+						    Map.Entry<String,String> entry = it.next();
+						 
+						    // Stampa a schermo la coppia chiave-valore;
+						    System.out.println("Key = " + entry.getKey());
+						    System.out.println("Value = " + entry.getValue());
+						    }
+					}*/
+			    }
 			db.disconnetti();
 		}
 		jsonEncode(result,String.valueOf(base_num),String.valueOf(base_cl), String.valueOf((int)base_pot), out);

@@ -209,6 +209,7 @@ Ext.onReady(function() {
 
 	Ext.getCmp('grigliaAggregazioneTerr').setLoading('Caricamento Aggregazione Territoriale');
 	aggTerStore.load();
+	console.log(aggTerStore);
 
 });
 function excelExport() {

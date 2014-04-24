@@ -1,6 +1,7 @@
 <%
 String username = request.getParameter("user");
 String user_id = request.getParameter("id_utente");
+
 %>
 <html>
 <head>

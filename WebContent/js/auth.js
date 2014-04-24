@@ -22,7 +22,9 @@ function checkAuth(page) {
 	    return -1;
 	  };
 	}
-
+	
+	
+	
 	// permessi pagina mappa
 	if (page === 'map') {
 		// ricerca utb su albero
@@ -108,6 +110,16 @@ function checkAuth(page) {
 		}
 	}
 	
+	/*
+	if (page === 'top') {
+		// visualizza bottone ZA e Gestione utente
+		if (permessi.indexOf('20') < 0) {
+			Ext.getCmp('za_button').destroy();
+			Ext.getCmp('usermng_button').destroy();
+		}		
+	}*/
+	
+	/*
 	if (page === 'statMarAz') {
 		if (permessi.indexOf('20') < 0) {
 			Ext.getCmp('expStatMarAzBtn').disable();
@@ -119,6 +131,7 @@ function checkAuth(page) {
 			Ext.getCmp('expStatParAzBtn').disable();
 		}
 	}
+	*/
 	
 }
 	
