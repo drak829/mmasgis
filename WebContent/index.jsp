@@ -28,7 +28,7 @@ if(request.getParameterMap().containsKey("id_vetrina")) {
     <input type="hidden" name="cap" value="">
 	<input type="hidden" name="dbname" value="">
 	<input type="hidden" name="custom" value="">
-	<input type="hidden" name="customer" value=""/>
+	<input type="hidden" name="customer" value="">
 	<input type="hidden" name="dbpers" value="">
 	<input type="hidden" name="id_offerta" value="">
 	<input type="hidden" name="id_vetrina" value="">
@@ -45,13 +45,15 @@ if(request.getParameterMap().containsKey("id_vetrina")) {
 	<link rel="stylesheet" type="text/css" href="extjs/resources/css/ext-all-gray.css">
 	<script src="js/const.js"></script>
 	<script src="http://maps.google.com/maps/api/js?v=3&amp;sensor=false"></script>
-    <script src="http://openlayers.org/api/OpenLayers.js"></script>
-	<script type="text/javascript">
+   	<script src="http://openlayers.org/api/OpenLayers.js"></script>
+    <!--  	<script src="js/openlayers/lib/OpenLayers.js"> </script> -->
+	<script type="text/javascript"> 
 		var user_id = '<%=user_id%>';
 		var username = '<%=username%>';
 		var permessi = <%=permessi%>;
 		var lista_censimenti = <%=censimenti%>;
 		var customer = "<%=customer%>";
+		
 		var id_offerta = '<%=id_offerta%>';
 		var id_vetrina = '<%=id_vetrina%>';
 	</script>

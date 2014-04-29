@@ -55,11 +55,11 @@ public class ClassTask extends Task {
 		DBManager db = new DBManager(censimento, Const.username, Const.password);
 		
 		PrintWriter out = null;
-		
 		if (db.connetti()) {
 			String query = String.format(Const.queryClass, categoria, categoria);
 			
 			ArrayList<HashMap<String,String>> elencoClassi = db.eseguiQuery(query, true);
+		
 			try {
 				out = response.getWriter();
 				jsonEncode(elencoClassi, out);

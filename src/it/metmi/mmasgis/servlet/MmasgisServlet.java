@@ -56,6 +56,8 @@ public class MmasgisServlet extends HttpServlet implements Servlet {
 		// CLASSI E VALORI
 		taskActions.put("getClass", new ClassTask());
 		taskActions.put("getValue", new ValueTask());
+		taskActions.put("allGetClass", new AllClassTask());
+		taskActions.put("findTableClassTask", new FindTableClassTask());
 		// PERSONALIZZAZIONI
 		taskActions.put("getClassAz", new ClassAzTask());
 		taskActions.put("getValueAz", new ValueAzTask());
@@ -76,6 +78,7 @@ public class MmasgisServlet extends HttpServlet implements Servlet {
 		taskActions.put("servicesValuesAz", new ServicesValuesAziendaList());
 		// ANALYSIS
 		taskActions.put("aggTer", new PvAnalysis());
+		taskActions.put("aggTerAz", new PvAzAnalysis());
 		taskActions.put("aggPar", new ParAnalysis());
 		taskActions.put("brandsAnalysis", new BrandsAnalysis());
 		taskActions.put("servicesAnalysis", new ServicesAnalysis());

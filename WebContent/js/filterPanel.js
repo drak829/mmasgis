@@ -12,6 +12,9 @@ var height = 360;
 var width = 300;
 
 function resetFilter() {
+	Ext.getCmp('radio1').setValue(true);
+	Ext.getCmp('radio2').setValue(false);
+	Ext.getCmp('radio3').setValue(false);
 	selectedParValues = [];
 	Ext.getCmp('SelPar').getStore().loadData(selectedParValues, false);
 	selectedPotValues = [];
@@ -33,8 +36,8 @@ function resetFilter() {
 	}
 }
 
-function showFilters() {
-
+function showFilters(results) {
+	//console.debug('filtri: '+results);
 	// ////////////////////////////////////////////////
 	// MODEL
 	// ////////////////////////////////////////////////
@@ -835,6 +838,7 @@ function showFilters() {
 	// GRIDPANEL
 	// ///////////////////////////////////////////////////
 	var chooseClient = Ext.create('Ext.form.Panel', {
+		 id: 'chooseClient',
 		 frame : true,
 		 flex: 1,
 		 items : [{
@@ -847,16 +851,19 @@ function showFilters() {
 				 hideEmptyLabel : false
 			 },
 			 items : [{
+				 id: 'radio1',
 				 checked : true,
 				 boxLabel : 'Seleziona Clienti e non Clienti',
 				 name : 'liv',
 				 inputValue : 'entrambi'
 			 }, {
+				 id: 'radio2',
 				 checked : false,
 				 boxLabel : 'Seleziona solo Clienti',
 				 name : 'liv',
 				 inputValue : 'clienti'
 			 }, {
+				 id: 'radio3',
 				 checked : false,
 				 boxLabel : 'Seleziona solo non Clienti',
 				 name : 'liv',
@@ -1944,7 +1951,7 @@ function showFilters() {
 			} ]
 		} ],
 		items : [ {
-			title : 'Dati anagrafici',
+			title : 'Dati generali',
 			items :[chooseClient],
 			layout : 'hbox'
 		},{
@@ -1955,42 +1962,51 @@ function showFilters() {
 			title : 'Parametri',
 			items : [ classePar, valorePar, selected_par ],
 			layout : 'hbox'
-		},{
+		}]
+	});
+		if(results[0]!='0'){
+			tab.add({
+				title : 'Servizi',
+				items : [ classeSer, valoreSer, selected_ser ],
+				layout : 'hbox'
+			});
+		}
+		tab.add({
 			title : 'Marche',
 			items : [ classeMar, valoreMar, selected_mar ],
 			layout : 'hbox'
-		},{
-			title : 'Servizi',
-			items : [ classeSer, valoreSer, selected_ser ],
-			layout : 'hbox'
-		}]
-	});
+		});
+	
 	
 	if(custom=='1') {
-		
-		tab.add({
-			title : 'Fatturati',
-			items : [ classeFat, valoreFat, selected_fat ],
-			layout : 'hbox'
-		});
-		
-		tab.add({
-			title : 'Potenziali Az',
-			items : [ classePotAz, valorePotAz, selected_pot_az ],
-			layout : 'hbox'
-		});
-		
-		tab.add({
-			title : 'Parametri Az',
-			items : [ classeParAz, valoreParAz, selected_par_az ],
-			layout : 'hbox'
-		});
-	
-		tab.add({
-			title : 'Marche Az',
-			items : [ classeMarAz, valoreMarAz, selected_mar_az ],
-			layout : 'hbox'
-		});
+		if(results[1]!='0'){
+			tab.add({
+				title : 'Fatturati',
+				items : [ classeFat, valoreFat, selected_fat ],
+				layout : 'hbox'
+			});
+		}
+		if(results[2]!='0'){
+			tab.add({
+				title : 'Potenziali Az',
+				items : [ classePotAz, valorePotAz, selected_pot_az ],
+				layout : 'hbox'
+			});
+		}
+		if(results[3]!='0'){
+			tab.add({
+				title : 'Parametri Az',
+				items : [ classeParAz, valoreParAz, selected_par_az ],
+				layout : 'hbox'
+			});
+		}
+		if(results[4]!='0'){
+			tab.add({
+				title : 'Marche Az',
+				items : [ classeMarAz, valoreMarAz, selected_mar_az ],
+				layout : 'hbox'
+			});
+		}
 	}
 	
 	var window = new Ext.Window({

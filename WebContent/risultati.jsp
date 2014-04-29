@@ -13,6 +13,7 @@ String com = request.getParameter("com");
 String cap = request.getParameter("cap");
 String custom = request.getParameter("custom");
 String customer = request.getParameter("customer");
+String results = request.getParameter("results");
 //String censimenti = (String) session.getAttribute("censimenti");
 //String settore = (String) session.getAttribute("settore");
 String id_offerta = (String) request.getParameter("id_offerta");
@@ -44,6 +45,7 @@ String id_vetrina = (String) request.getParameter("id_vetrina");
 		dbname = "<%=dbname%>";
 		custom = "<%=custom%>";
 		customer = "<%=customer%>";
+		var results = "<%=results%>";
 		id_offerta = "<%=id_offerta%>";
 		id_vetrina = "<%=id_vetrina%>";
 	</script>
@@ -72,6 +74,7 @@ String id_vetrina = (String) request.getParameter("id_vetrina");
 	<input type="hidden" name="censimento" />
 	<input type="hidden" name="selections" />
 	<input type="hidden" name="customer" />
+	<input type="hidden" name="results" />
 	<input type="hidden" name="reg" />
 	<input type="hidden" name="pro" />
 	<input type="hidden" name="com" />
@@ -117,6 +120,18 @@ String id_vetrina = (String) request.getParameter("id_vetrina");
 	<input type="hidden" name="marche" />
 </form>
 <form id="aggregazioneterr" action="agg_territori.jsp" method="post" target="aggterr">
+	<input type="hidden" name="censimento" />
+	<input type="hidden" name="reg" />
+	<input type="hidden" name="pro" />
+	<input type="hidden" name="com" />
+	<input type="hidden" name="cap" />
+	<input type="hidden" name="layer" />
+	<input type="hidden" name="classe" />
+	<input type="hidden" name="parametri" />
+	<input type="hidden" name="potenziali" />
+	<input type="hidden" name="marche" />
+</form>
+<form id="aggregazioneterraz" action="agg_territoriAz.jsp" method="post" target="aggterraz">
 	<input type="hidden" name="censimento" />
 	<input type="hidden" name="reg" />
 	<input type="hidden" name="pro" />

@@ -1083,7 +1083,7 @@ function logout() {
 };	
 		
 //INVIA SELEZIONI AL DATABASE TRAMITE GET
-function showFeatures(database, custom){
+function showFeatures(database){
 	
     var f = document.getElementById('showFeatures');
     r=0;

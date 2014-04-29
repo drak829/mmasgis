@@ -337,7 +337,7 @@ function removeFeaturesFromGrid(featureFid) {
  * @param database
  * @param custom
  */
-function showFeatures(database, custom) {
+function showFeatures(database, custom/*, results*/) {
 	var f = document.getElementById('showFeatures');
 	r = 0;
 
@@ -372,8 +372,7 @@ function showFeatures(database, custom) {
 		f.id_offerta.value = id_offerta;
 		f.id_vetrina.value = id_vetrina;
 		if(id_offerta == "" && id_vetrina == "") {
-			win = window.open('', 'new_tab');
-
+			var win = window.open('', 'new_tab');
 			f.submit();
 			win.focus();
 		}

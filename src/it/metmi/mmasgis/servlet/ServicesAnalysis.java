@@ -74,7 +74,7 @@ public class ServicesAnalysis extends Task {
 			
 			if (db.eseguiAggiornamento(tabellaTemporanea)) {
 				
-				Vector<String[]> baseField = db.eseguiQuery(String.format(Const.baseNumPot, censimento, censimento, censimento, classeId));
+				Vector<String[]> baseField = db.eseguiQuery(String.format(Const.baseNumPotSer, censimento, censimento, censimento, classeId));
 				
 				for(String[] s:baseField) {
 					base_num++;

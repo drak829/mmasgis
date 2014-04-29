@@ -1074,7 +1074,7 @@ function returnDeleteMarAzGrid(){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 var storeSerGrid = new Array();
 var deleteSerGrid=new Array();
-
+var storeSerLength=0;
 function servicesGridFactory(pv_id) {
 	var storeServices = Ext.create('Ext.data.Store',
 			{
@@ -1314,8 +1314,12 @@ function servicesGridFactory(pv_id) {
 		},
 		items : [ ServicesGrid, ServicesValuesGrid ]
 	});
-
+	//console.log(storeServices);
+	//console.log(storeServices.getCount());
+	//storeSerLength=storeServices.data.length;
+	//console.debug('store: '+storeServices.data.length);
 	return ServicesPanel;
+	
 }
 
 function returnStoreSerGrid(){
@@ -1323,6 +1327,9 @@ function returnStoreSerGrid(){
 }
 function returnDeleteSerGrid(){
 	return deleteSerGrid;
+}
+function getStoreSerLength(){
+	return storeSerLength;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function fatturatiGridFactory(pv_id) {

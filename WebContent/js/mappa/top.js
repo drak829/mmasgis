@@ -1,6 +1,8 @@
 /**
  * INIT TOOLBAR
  */
+var out=new Array();
+var res=new Array();
 toolbar = Ext.create('Ext.toolbar.Toolbar', {
 	// renderTo: document.body,
 	// width : 500,
@@ -147,56 +149,39 @@ function showCensimenti() {
 		}],
 		listeners : {
 			itemdblclick : function(dv, record, item, index, e) {
-
 				var selection = f.getView().getSelectionModel().getSelection()[0];
-				// console.debug(selection.data.nome);
-				showFeatures(selection.data.nome, selection.data.custom);
+				/*Ext.Ajax.request({
+		     		url: 'http://' + constants.ip + constants.root + constants.servlet,
+			  			params:{
+			  				task : 'findTableClassTask',
+			  				censimento : selection.data.nome
+			  			},
+					  	success: function(response){
+					  		var obj = Ext.decode(response.responseText);
+					  		//console.debug(obj.results);
+					  		for(var i=0;i<5;i++){
+					  			res[i]=obj.results[i];
+					  		}
+					  		console.debug("dp: "+res);
+					  	}
+			  	});		
+				console.debug(res);*/
+		  		showFeatures(selection.data.nome, selection.data.custom,res);
+				
 			}
 		}
 
 	});
 	
-	/*var chooseClient = Ext.create('Ext.FormPanel', {
-		 frame : true,
-		 items : [{
-			 xtype : 'fieldset',
-			 flex : 1,
-			 title : 'Filtra l\'estrazione delle anagrafiche',
-			 defaultType : 'radio',
-			 layout : 'anchor',
-			 defaults : {
-				 anchor : '100%',
-				 hideEmptyLabel : false
-			 },
-			 items : [{
-				 checked : false,
-				 boxLabel : 'Cliente',
-				 name : 'liv',
-				 inputValue : 'cliente'
-			 }, {
-				 checked : false,
-				 boxLabel : 'Non cliente',
-				 name : 'liv',
-				 inputValue : 'no_cliente'
-			 }, {
-				 checked : true,
-				 boxLabel : 'Entrambi',
-				 name : 'liv',
-				 inputValue : 'entrambi'
-			 }]
-		 }]
-
-	 });*/
-	
 	var w = new Ext.Window({
 		resizable : false,
-		width : 250,
+		width : 350,
 		height : 250,
 		//maximizable: true,
 		//resizable : true,
 		autoScroll : true,
 		title : "censimenti disponibili",
-		items : [f/*,chooseClient*/],
+		items : [f],
 		dockedItems : [{
 			xtype : 'toolbar',
 			dock : 'bottom',
@@ -208,10 +193,29 @@ function showCensimenti() {
 				icon : 'img/ok.png',
 				scale : 'medium',
 				handler : function() {
-
 					var selection = f.getView().getSelectionModel().getSelection()[0];
-					//console.debug(chooseClient.getForm().getFieldValues().liv);
+					
+					//var res=new Array();
+					/*Ext.Ajax.request({
+			     			url: 'http://' + constants.ip + constants.root + constants.servlet,
+				  			params:{
+				  				task : 'findTableClassTask',
+				  				censimento : selection.data.nome
+				  			},
+						  	success: function(response){
+						  		
+						  		var obj = Ext.decode(response.responseText);
+						  		console.debug(response);
+						  		//for(var i=0;i<5;i++){
+						  	//		res[i]=obj.results[i];
+						  	//	}
+						  		//outData(res);
+						  		//console.debug('apri: '+res);
+						  	}
+				  	});*/
+					//console.debug(res);
 					showFeatures(selection.data.nome, selection.data.custom);
+					
 				}
 			}]
 		}],
@@ -226,7 +230,9 @@ function showCensimenti() {
 	w.center();
 	Ext.getCmp('databaseButton').disable();
 }
-
+function outData(par){
+	out=par;
+}
 /**
  * ATTIVA FUNZIONI DI DRAG E PAN SULLA MAPPA
  */

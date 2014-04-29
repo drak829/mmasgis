@@ -17,6 +17,9 @@ Ext.onReady(function() {
 		fields : [{
 			name : 'Territorio',
 			type : 'string'
+		},{
+			name : 'CAP',
+			type : 'integer'
 		}, {
 			name : 'NumPV',
 			type : 'real'
@@ -168,6 +171,11 @@ Ext.onReady(function() {
 			dataIndex : 'Territorio',
 			text : primaColonna,
 			flex : 1
+		},
+		   {
+			dataIndex: 'CAP',
+			text: 'CAP',
+			flex : 0.3
 		}, {
 			dataIndex : 'NumPV',
 			text : 'Numero PV',
@@ -209,6 +217,7 @@ Ext.onReady(function() {
 
 	Ext.getCmp('grigliaAggregazioneTerr').setLoading('Caricamento Aggregazione Territoriale');
 	aggTerStore.load();
+	//console.log(aggTerStore);
 
 });
 function excelExport() {

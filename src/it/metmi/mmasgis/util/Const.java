@@ -19,8 +19,9 @@ public class Const {
 	/**
 	 * Password del database
 	 */
+	
+	//public static String password = "labcad";
 	public static String password = "unimi??";
-	// public static String password = "ac78.ac78";
 	// AZIENDA
 	//public static String password = "$$metmi";
 	
@@ -340,7 +341,23 @@ public class Const {
 			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id) "
 			+ "LEFT JOIN tc_clpot ON (rp.tc_clpot_id=tc_clpot.tc_clpot_id)"
 			+ "WHERE  m.tc_clmar_id = %s  AND tc_clpot.primario=1 ORDER BY pv_id";
-
+	/**
+	 * Query per ottenere la base potenziale e la base numerica per Analisi
+	 * servizi.
+	 * <p>
+	 * <code>
+	 * SELECT DISTINCT m.pv_id , IF(rp.valore IS NULL, 0, rp.valore) valore_pot <p>
+	 * FROM %s.rel_pv_mar m <p>
+	 * INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) <p>
+	 * LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = 1) <p>
+	 * WHERE  m.tc_clmar_id = %s ORDER BY pv_id
+	 * </code>
+	 */
+	public static String baseNumPotSer = "SELECT DISTINCT m.pv_id , IF(rp.valore IS NULL, 0, rp.valore) valore_pot "
+			+ "FROM %s.rel_pv_ser m " + "INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) "
+			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id) "
+			+ "LEFT JOIN tc_clpot ON (rp.tc_clpot_id=tc_clpot.tc_clpot_id)"
+			+ "WHERE  m.tc_clser_id = %s  AND tc_clpot.primario=1 ORDER BY pv_id";
 	/**
 	 * Query per ottenere la base potenziale e la base numerica per Analisi
 	 * marche azienda.
@@ -393,12 +410,12 @@ public class Const {
 			+ "ROUND(SUM(rp.valore*m.uso/100.0)/ %s*100.0,2) ind_servizio , "
 			+ "ROUND(SUM(rp.valore*m.uso)/SUM(rp.valore)+0.0,2) eff_servizio, "
 			+ "ROUND(SUM(rp.valore)/COUNT(*)*%s/%s,2) eff_valore "
-			+ "FROM %s.rel_pv_mar m "
+			+ "FROM %s.rel_pv_ser m "
 			+ "INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) "
-			+ "INNER JOIN %s.tc_mar tcm ON (m.tc_mar_id = tcm.tc_mar_id) "
+			+ "INNER JOIN %s.tc_ser tcm ON (m.tc_ser_id = tcm.tc_ser_id) "
 			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id) "
 			+ "LEFT JOIN tc_clpot ON (rp.tc_clpot_id=tc_clpot.tc_clpot_id and tc_clpot.primario=1)"
-			+ "WHERE m.tc_clmar_id = %s GROUP BY tcm.tc_mar_id ORDER BY %s %s";
+			+ "WHERE m.tc_clser_id = %s GROUP BY tcm.tc_ser_id ORDER BY %s %s";
 	
 	/**
 	 * Query per Analisi Marche Azienda.
@@ -446,6 +463,23 @@ public class Const {
 			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = %s) ";
 
 	/**
+	 * Query per base numerica dell'aggregazione territoriale.
+	 * <p>
+	 * <code>
+	 * SELECT COUNT(tc.nome1) FROM %s.geografia s <p>
+	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) <p>
+	 * JOIN mmasgisDB.tc_regione tc ON (i.tc_regione_id=tc.tc_regione_id) <p>
+	 * JOIN %s.pv p ON (s.pv_id = p.pv_id) <p>
+	 * LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = %s) 
+	 * </code>
+	 */
+	public static String baseNumTerrAz = "SELECT COUNT(tc.nome1) FROM %s.geografia s "
+			+ "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
+			+ "JOIN mmasgisDB.tc_regione tc ON (i.tc_regione_id=tc.tc_regione_id) "
+			+ "JOIN %s.pv p ON (s.pv_id = p.pv_id) "
+			+ "LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) ";
+	
+	/**
 	 * Query per base numerica dell'aggregazione territoriale per fatturati.
 	 * <p>
 	 * <code>
@@ -474,6 +508,19 @@ public class Const {
 	public static String baseNumPotTerr = "SELECT DISTINCT m.pv_id , IF(rp.valore IS NULL, 0, rp.valore) valore_pot "
 			+ "FROM %s.rel_pv_pot m " + "INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) "
 			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = %s) ";
+	
+	/**
+	 * Query per base potenziale azienda dell'aggregazione territoriale.
+	 * <p>
+	 * <code>
+	 * SELECT DISTINCT m.pv_id , IF(rp.valore IS NULL, 0, rp.valore) valore_pot <p>
+	 * FROM %s.rel_pv_pot m " + "INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) <p>
+	 * LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) 
+	 * </code>
+	 */
+	public static String baseNumPotAzTerr = "SELECT DISTINCT m.pv_id , IF(rp.valore IS NULL, 0, rp.valore) valore_pot "
+			+ "FROM %s.rel_pv_pot_az m " + "INNER JOIN %s.geografia s ON (m.pv_id = s.pv_id) "
+			+ "LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) ";
 	
 	/**
 	 * Query per base potenziale dell'aggregazione territoriale.
@@ -508,6 +555,25 @@ public class Const {
 			+ "WHERE cliente = 1";
 
 	/**
+	 * Query per base clienti dell'analisi territoriale azienda.
+	 * <p>
+	 * <code>
+	 * SELECT count(p.cliente) cl from %s.geografia s <p>
+	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) <p>
+	 * JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) <p>
+	 * JOIN %s.pv p ON (s.pv_id = p.pv_id) <p>
+	 * LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) <p>
+	 * WHERE cliente = 1
+	 * </code>
+	 */
+	public static String baseNumClTerrAz = "SELECT count(p.cliente) cl from %s.geografia s "
+			+ "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
+			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "
+			+ "JOIN %s.pv p ON (s.pv_id = p.pv_id)  "
+			+ "LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) " 
+			+ "WHERE cliente = 1";
+	
+	/**
 	 * Query per base clienti dell'analisi territoriale.
 	 * <p>
 	 * <code>
@@ -528,6 +594,34 @@ public class Const {
 
 	
 	/**
+	 * Query per Aggregazione Territoriale Azienda.
+	 * <p>
+	 * <code>
+	 * SELECT tc.tc_%s_id id, tc.nome1 AS nome, p.cap AS cap," 
+	 * COUNT(tc.nome1) AS NumPV, 
+	 * ROUND(COUNT(tc.nome1)/ %s *100.0, 2) PercentPV , 
+	 * SUM(p.cliente) AS NumClienti, 
+	 * ROUND(SUM(p.cliente)/ %s *100.0, 2) PercentClienti, 
+	 * ROUND(SUM(rp.valore),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT 
+	 * FROM %s.geografia s 
+	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) 
+	 * JOIN mmasgisDB.tc_%s tc ON (i.tc_%s_id=tc.tc_%s_id) 
+	 * JOIN %s.pv p ON (s.pv_id = p.pv_id)  
+	 * LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) 
+	 * GROUP BY tc.tc_%s_id 
+	 * ORDER BY %s %s
+	 * </code>
+	 */
+	public static String aggregazionePvAz = "SELECT tc.tc_%s_id id, tc.nome1 AS Territorio,"
+			+ "COUNT(tc.nome1) AS NumPV, " + "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
+			+ "SUM(p.cliente) AS NumClienti," + "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
+			+ "ROUND(SUM(rp.valore),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
+			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
+			+ "JOIN mmasgisDB.tc_%s tc ON (i.tc_%s_id=tc.tc_%s_id) " + "JOIN %s.pv p ON (s.pv_id = p.pv_id)  "
+			+ "LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) " + "GROUP BY tc.tc_%s_id "
+			+ "ORDER BY %s %s";
+	
+	/**
 	 * Query per Aggregazione Territoriale.
 	 * <p>
 	 * <code>
@@ -536,7 +630,7 @@ public class Const {
 	 * ROUND(COUNT(tc.nome1)/ %s *100.0, 2) PercentPV , 
 	 * SUM(p.cliente) AS NumClienti, 
 	 * ROUND(SUM(p.cliente)/ %s *100.0, 2) PercentClienti, 
-	 * ROUND(SUM(rp.valore),0) potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT 
+	 * ROUND(SUM(rp.valore),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT 
 	 * FROM %s.geografia s 
 	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) 
 	 * JOIN mmasgisDB.tc_%s tc ON (i.tc_%s_id=tc.tc_%s_id) 
@@ -607,14 +701,45 @@ public class Const {
 	 * ORDER BY %s %s, p.cap
 	 * </code>
 	 */
-	public static String aggregazionePvCap = "SELECT tc.tc_comune_id id,tc.nome1 AS Territorio, "
+	public static String aggregazionePvCap = "SELECT tc.tc_comune_id id,tc.nome1 AS Territorio,%s "
 			+ "COUNT(tc.nome1) AS NumPV, " + "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
 			+ "SUM(p.cliente) AS NumClienti," + "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
-			+ "ROUND(SUM(rp.valore)/NumPV,0) potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
+			+ "ROUND(SUM(rp.valore)/COUNT(tc.nome1),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
 			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
 			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "
 			+ "JOIN %s.pv p ON (s.pv_id = p.pv_id) "
 			+ "LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = %s) "
+			+ "LEFT OUTER JOIN mmasgisDB.tc_cap ON (tc_cap.tc_comune_id = i.tc_comune_id AND tc_cap.nome1=p.cap) "
+			+ "GROUP BY tc.tc_comune_id,tc_cap.nome1, p.cap " + "ORDER BY %s %s, p.cap";
+	
+	/**
+	 * Query per Aggregazione Territoriale a livello Comuni e Aree CAP.
+	 * <p>
+	 * <code>
+	 * SELECT tc.tc_comune_id id,tc.nome1 AS nome, p.cap AS cap, <p>
+	 * COUNT(tc.nome1) AS NumPV, <p>
+	 * ROUND(COUNT(tc.nome1)/ %s *100.0, 2) PercentPV <p>
+	 * SUM(p.cliente) AS NumClienti, <p>
+	 * ROUND(SUM(p.cliente)/ %s *100.0, 2) PercentClienti, <p>
+	 * ROUND(SUM(rp.valore),0) potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) PercentPOT <p>
+	 * FROM %s.geografia s <p>
+	 * JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) <p>
+	 * JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) <p>
+	 * JOIN %s.pv p ON (s.pv_id = p.pv_id) <p>
+	 * LEFT JOIN %s.rel_pv_pot rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_id = %s) <p>
+	 * LEFT OUTER JOIN mmasgisDB.tc_cap ON (tc_cap.tc_comune_id = i.tc_comune_id AND tc_cap.nome1=p.cap) <p>
+	 * GROUP BY tc.tc_comune_id,tc_cap.nome1, p.cap <p>
+	 * ORDER BY %s %s, p.cap
+	 * </code>
+	 */
+	public static String aggregazionePvAzCap = "SELECT tc.tc_comune_id id,tc.nome1 AS Territorio,%s "
+			+ "COUNT(tc.nome1) AS NumPV, " + "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
+			+ "SUM(p.cliente) AS NumClienti," + "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
+			+ "ROUND(SUM(rp.valore)/COUNT(tc.nome1),0) Potenziale,ROUND(SUM(rp.valore)/ %s *100.0,2) Percentuale_Pot "
+			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
+			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "
+			+ "JOIN %s.pv p ON (s.pv_id = p.pv_id) "
+			+ "LEFT JOIN %s.rel_pv_pot_az rp ON (s.pv_id = rp.pv_id AND rp.tc_clpot_az_id = %s) "
 			+ "LEFT OUTER JOIN mmasgisDB.tc_cap ON (tc_cap.tc_comune_id = i.tc_comune_id AND tc_cap.nome1=p.cap) "
 			+ "GROUP BY tc.tc_comune_id,tc_cap.nome1, p.cap " + "ORDER BY %s %s, p.cap";
 	
@@ -643,7 +768,7 @@ public class Const {
 			+ "ROUND(COUNT(tc.nome1)/ %s *100.0, 2) Percentuale_PV ,"
 			+ "SUM(p.cliente) AS NumClienti," 
 			+ "ROUND(SUM(p.cliente)/ %s *100.0, 2) Percentuale_Clienti, "
-			+ "ROUND(SUM(rp.importo)/NumPV,0) Fatturato,"
+			+ "ROUND(SUM(rp.importo)/COUNT(tc.nome1),0) Fatturato,"
 			+ "ROUND(SUM(rp.importo)/ %s *100.0,2) Percentuale_Fatt "
 			+ "FROM %s.geografia s " + "JOIN mmasgisDB.tc_istat i ON (s.tc_istat_id = i.tc_istat_id) "
 			+ "JOIN mmasgisDB.tc_comune tc ON (i.tc_comune_id=tc.tc_comune_id) "
